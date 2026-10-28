@@ -1,0 +1,9 @@
+private/
+work/
+outputs/
+node_modules/
+.openai/
+.env
+.env.*
+*.log
+
