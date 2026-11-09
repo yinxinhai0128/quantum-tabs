@@ -179,13 +179,26 @@ renderResources();
 function renderNotes() {
   content.notes.forEach((note) => {
     const article = create("article");
-    article.append(create("span", "small muted", "个人手记 · " + note.date), create("h3", "", note.title), create("p", "", note.summary));
-    const read = create("button", "text-link", "阅读手记 →");
+    article.append(create("span", "small muted", (note.type || "个人手记") + " · " + note.date), create("h3", "", note.title), create("p", "", note.summary));
+    const read = create("button", "text-link", "阅读文章 →");
     read.type = "button";
     read.addEventListener("click", () => {
       $("#note-title").textContent = note.title;
+      $("#note-dialog .dialog-head .small").textContent = note.type || "个人手记";
       const body = $("#note-dialog .prose");
       body.replaceChildren(...note.paragraphs.map((text) => create("p", "", text)));
+      if (note.sources && note.sources.length) {
+        body.append(create("h3", "", "资料来源"));
+        note.sources.forEach((source) => {
+          const paragraph = create("p");
+          const link = create("a", "text-link", source.title + " ↗");
+          link.href = source.url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          paragraph.append(link);
+          body.append(paragraph);
+        });
+      }
       openDialog("note-dialog");
     });
     article.append(read);
